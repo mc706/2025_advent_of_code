@@ -2,22 +2,18 @@ import gleam/int
 import gleam/list
 import gleam/result
 import gleam/string
-import simplifile
 
-import day1/dial.{type ParseRotationError, type Position, type Rotation}
+import day1/dial.{type Position, type Rotation}
+import day1/errors
+import shared
 
-pub fn main() -> Result(#(Int, Int), AppError) {
+pub fn main() -> Result(#(Int, Int), shared.AppError) {
   use result_1 <- result.try(problem_1())
   use result_2 <- result.try(problem_2())
   Ok(#(result_1, result_2))
 }
 
-pub type AppError {
-  FileError(err: simplifile.FileError)
-  ParseRotationError(err: ParseRotationError)
-}
-
-fn problem_1() -> Result(Int, AppError) {
+fn problem_1() -> Result(Int, shared.AppError) {
   use turns <- result.try(read_and_parse_input())
   turns
   |> apply_turns
@@ -25,30 +21,28 @@ fn problem_1() -> Result(Int, AppError) {
   |> Ok
 }
 
-fn problem_2() -> Result(Int, AppError) {
+fn problem_2() -> Result(Int, shared.AppError) {
   use turns <- result.try(read_and_parse_input())
   turns
   |> apply_turns_counting_zeros
   |> Ok
 }
 
-fn read_and_parse_input() -> Result(List(Rotation), AppError) {
+fn read_and_parse_input() -> Result(List(Rotation), shared.AppError) {
   use content <- result.try(
-    read_input()
-    |> result.map_error(FileError),
+    shared.read_input("src/day1/input-1.txt")
+    |> result.map_error(shared.FileError),
   )
   use turns <- result.try(
     parse_input(content)
-    |> result.map_error(ParseRotationError),
+    |> result.map_error(shared.ParseRotationError),
   )
   Ok(turns)
 }
 
-fn read_input() -> Result(String, simplifile.FileError) {
-  simplifile.read("src/day1/input-1.txt")
-}
-
-fn parse_input(input: String) -> Result(List(Rotation), ParseRotationError) {
+fn parse_input(
+  input: String,
+) -> Result(List(Rotation), errors.ParseRotationError) {
   input
   |> string.split("\n")
   |> list.map(dial.parse_rotation)
