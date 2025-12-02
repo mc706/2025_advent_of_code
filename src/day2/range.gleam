@@ -14,13 +14,9 @@ pub fn new_range(start: Int, end: Int) -> Range {
 pub fn parse(input: String) -> Result(Range, ParseRangeError) {
   case string.split(input, "-") {
     [start_str, end_str] -> {
-      let start = int.parse(start_str)
-      let end = int.parse(end_str)
-      case start, end {
+      case int.parse(start_str), int.parse(end_str) {
         Ok(s), Ok(e) -> Ok(new_range(s, e))
-        Error(_), _ ->
-          Error(InvalidNumber("Invalid start number: " <> start_str))
-        _, Error(_) -> Error(InvalidNumber("Invalid end number: " <> end_str))
+        _, _ -> Error(InvalidNumber("Invalid numbers in range: " <> input))
       }
     }
     _ -> Error(InvalidFormat(input <> " is not in the format start-end"))
