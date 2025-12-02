@@ -1,14 +1,18 @@
-import day2/errors.{type ParseRangeError, InvalidFormat, InvalidNumber}
 import gleam/int
 import gleam/list
 import gleam/string
 
-pub type Range {
+pub opaque type Range {
   Range(start: Int, end: Int)
 }
 
 pub fn new_range(start: Int, end: Int) -> Range {
   Range(start, end)
+}
+
+pub type ParseRangeError {
+  InvalidFormat(msg: String)
+  InvalidNumber(msg: String)
 }
 
 pub fn parse(input: String) -> Result(Range, ParseRangeError) {

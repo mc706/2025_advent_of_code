@@ -1,4 +1,3 @@
-import day2/errors
 import day2/range.{type Range}
 import gleam/int
 import gleam/list
@@ -7,46 +6,29 @@ import gleam/string
 import shared.{type AppError}
 
 pub fn main() -> Result(#(Int, Int), AppError) {
-  use result_1 <- result.try(problem_1())
-  use result_2 <- result.try(problem_2())
+  use data <- result.try(shared.process_input(
+    "src/day2/input.txt",
+    ",",
+    range.parse,
+    shared.ParseRangeError,
+  ))
+  let result_1 = problem_1(data)
+  let result_2 = problem_2(data)
   Ok(#(result_1, result_2))
 }
 
-fn problem_1() -> Result(Int, AppError) {
-  use ranges <- result.try(read_and_parse_input())
+fn problem_1(ranges: List(Range)) -> Int {
   ranges
   |> list.flat_map(range.to_list)
   |> list.filter(is_invalid_product_id)
   |> int.sum
-  |> Ok
 }
 
-fn problem_2() -> Result(Int, AppError) {
-  use ranges <- result.try(read_and_parse_input())
+fn problem_2(ranges: List(Range)) -> Int {
   ranges
   |> list.flat_map(range.to_list)
   |> list.filter(is_part_two_invalid)
   |> int.sum
-  |> Ok
-}
-
-fn read_and_parse_input() -> Result(List(Range), AppError) {
-  use content <- result.try(
-    shared.read_input("src/day2/input.txt")
-    |> result.map_error(shared.FileError),
-  )
-  use ranges <- result.try(
-    parse_input(content)
-    |> result.map_error(shared.ParseRangeError),
-  )
-  Ok(ranges)
-}
-
-fn parse_input(input: String) -> Result(List(Range), errors.ParseRangeError) {
-  input
-  |> string.split(",")
-  |> list.map(range.parse)
-  |> result.all
 }
 
 fn split_halfway(s: String) -> #(String, String) {

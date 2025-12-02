@@ -1,12 +1,11 @@
-import day1/errors
 import gleam/int
 import gleam/result
 
-pub type Position {
+pub opaque type Position {
   Position(current: Int)
 }
 
-pub type Rotation {
+pub opaque type Rotation {
   Left(ticks: Int)
   Right(ticks: Int)
 }
@@ -16,21 +15,24 @@ pub fn new_position(i: Int) -> Position {
   Position({ { { i % 100 } + 100 } % 100 })
 }
 
-pub fn parse_rotation(
-  rotation: String,
-) -> Result(Rotation, errors.ParseRotationError) {
+pub type ParseRotationError {
+  MissingPrefix(msg: String)
+  InvalidNumber(msg: String)
+}
+
+pub fn parse_rotation(rotation: String) -> Result(Rotation, ParseRotationError) {
   case rotation {
     "L" <> ticks ->
       ticks
       |> int.parse
-      |> result.map_error(fn(_) { errors.InvalidNumber(rotation) })
+      |> result.map_error(fn(_) { InvalidNumber(rotation) })
       |> result.map(Left)
     "R" <> ticks ->
       ticks
       |> int.parse
-      |> result.map_error(fn(_) { errors.InvalidNumber(rotation) })
+      |> result.map_error(fn(_) { InvalidNumber(rotation) })
       |> result.map(Right)
-    _ -> Error(errors.MissingPrefix(rotation <> " does not start with L or R"))
+    _ -> Error(MissingPrefix(rotation <> " does not start with L or R"))
   }
 }
 

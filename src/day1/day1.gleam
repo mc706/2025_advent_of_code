@@ -1,52 +1,31 @@
 import gleam/int
 import gleam/list
 import gleam/result
-import gleam/string
 
 import day1/dial.{type Position, type Rotation}
-import day1/errors
 import shared
 
 pub fn main() -> Result(#(Int, Int), shared.AppError) {
-  use result_1 <- result.try(problem_1())
-  use result_2 <- result.try(problem_2())
+  use data <- result.try(shared.process_input(
+    "src/day1/input.txt",
+    "\n",
+    dial.parse_rotation,
+    shared.ParseRotationError,
+  ))
+  let result_1 = problem_1(data)
+  let result_2 = problem_2(data)
   Ok(#(result_1, result_2))
 }
 
-fn problem_1() -> Result(Int, shared.AppError) {
-  use turns <- result.try(read_and_parse_input())
+fn problem_1(turns: List(Rotation)) -> Int {
   turns
   |> apply_turns
   |> list.count(dial.is_zero)
-  |> Ok
 }
 
-fn problem_2() -> Result(Int, shared.AppError) {
-  use turns <- result.try(read_and_parse_input())
+fn problem_2(turns: List(Rotation)) -> Int {
   turns
   |> apply_turns_counting_zeros
-  |> Ok
-}
-
-fn read_and_parse_input() -> Result(List(Rotation), shared.AppError) {
-  use content <- result.try(
-    shared.read_input("src/day1/input-1.txt")
-    |> result.map_error(shared.FileError),
-  )
-  use turns <- result.try(
-    parse_input(content)
-    |> result.map_error(shared.ParseRotationError),
-  )
-  Ok(turns)
-}
-
-fn parse_input(
-  input: String,
-) -> Result(List(Rotation), errors.ParseRotationError) {
-  input
-  |> string.split("\n")
-  |> list.map(dial.parse_rotation)
-  |> result.all
 }
 
 fn apply_turns(turns: List(Rotation)) -> List(Position) {
