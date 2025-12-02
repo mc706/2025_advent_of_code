@@ -1,5 +1,6 @@
 import gleam/int
 import gleam/list
+import gleam/pair
 import gleam/result
 
 import day1/dial.{type Position, type Rotation}
@@ -41,10 +42,11 @@ fn apply_turns_counting_zeros(turns: List(Rotation)) -> Int {
     )
   let positional_zeros =
     results
-    |> list.count(fn(result) { dial.is_zero(result.0) })
+    |> list.map(pair.first)
+    |> list.count(dial.is_zero)
   let counted_zeros =
     results
-    |> list.map(fn(result) { result.1 })
+    |> list.map(pair.second)
     |> int.sum
   positional_zeros + counted_zeros
 }
