@@ -1,3 +1,5 @@
+ [![Tests](https://github.com/mc706/2025_advent_of_code/actions/workflows/test.yml/badge.svg)](https://github.com/mc706/2025_advent_of_code/actions/workflows/test.yml)
+
 # Advent of Code 2025
 [Advent of Code](https://adventofcode.com/)
 
