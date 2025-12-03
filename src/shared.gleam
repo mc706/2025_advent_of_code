@@ -1,5 +1,6 @@
 import day1/dial
 import day2/range
+import day3/joltage
 import gleam/list
 import gleam/result
 import gleam/string
@@ -9,6 +10,7 @@ pub type AppError {
   FileError(err: simplifile.FileError)
   ParseRotationError(err: dial.ParseRotationError)
   ParseRangeError(err: range.ParseRangeError)
+  ParseJoltageError(err: joltage.ParseJoltageError)
 }
 
 pub fn read_input(path: String) -> Result(String, simplifile.FileError) {
