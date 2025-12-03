@@ -13,7 +13,7 @@ pub type AppError {
   ParseJoltageError(err: joltage.ParseJoltageError)
 }
 
-pub fn read_input(path: String) -> Result(String, simplifile.FileError) {
+fn read_input(path: String) -> Result(String, simplifile.FileError) {
   simplifile.read(path)
 }
 

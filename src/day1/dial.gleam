@@ -1,5 +1,6 @@
 import gleam/int
 import gleam/result
+import utils
 
 pub opaque type Position {
   Position(current: Int)
@@ -47,28 +48,20 @@ pub fn is_zero(position: Position) -> Bool {
   position.current == 0
 }
 
-fn div_mod(a: Int, b: Int) -> #(Int, Int) {
-  #(a / b, a % b)
-}
-
-fn bool_to_int(b: Bool) -> Int {
-  case b {
-    True -> 1
-    False -> 0
-  }
-}
-
 fn count_zeros(position: Position, rotation: Rotation) -> Int {
   case rotation {
     Left(ticks) -> {
-      let #(full_turns, remainder) = div_mod(ticks, 100)
+      let #(full_turns, remainder) = utils.div_mod(ticks, 100)
       let turns_past_zero =
-        bool_to_int(position.current - remainder < 0 && position.current != 0)
+        utils.bool_to_int(
+          position.current - remainder < 0 && position.current != 0,
+        )
       full_turns + turns_past_zero
     }
     Right(ticks) -> {
-      let #(full_turns, remainder) = div_mod(ticks, 100)
-      let turns_past_zero = bool_to_int(position.current + remainder > 100)
+      let #(full_turns, remainder) = utils.div_mod(ticks, 100)
+      let turns_past_zero =
+        utils.bool_to_int(position.current + remainder > 100)
       full_turns + turns_past_zero
     }
   }
