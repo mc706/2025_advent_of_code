@@ -1,4 +1,5 @@
 # Advent of Code 2025
+[Advent of Code](https://adventofcode.com/)
 
 This edition in gleam!
 
@@ -30,7 +31,7 @@ Added each day in its own directory, with a
 * `PROBLEM.md` (for historical context)
 * `input.txt` (gitignored)
 * `dayX.gleam` the root solution
-* some domain module 
+* some domain module(s)
 
 #### Shared file processing
 Added a root `shared` module that has a `process_input` function that handles most takes a path, a delimiter, a parser and a error_mapper and handles most of the file parsing and error handling for the daily problems.
