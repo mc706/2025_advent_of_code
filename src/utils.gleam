@@ -1,6 +1,9 @@
 //// Utility functions
 
+import gleam/dict
+import gleam/int
 import gleam/list
+import gleam/option
 
 /// integer division with remainder
 pub fn div_mod(a: Int, b: Int) -> #(Int, Int) {
@@ -52,4 +55,81 @@ fn undigits_loop(numbers: List(Int), acc: Int) -> Int {
     [] -> acc
     [first, ..rest] -> undigits_loop(rest, acc * 10 + first)
   }
+}
+
+@deprecated("gleam really likess Result(a, Nil) over Option(a)")
+pub fn dict_option_get(dict: dict.Dict(a, b), key: a) -> option.Option(b) {
+  case dict.get(dict, key) {
+    Ok(value) -> option.Some(value)
+    Error(_) -> option.None
+  }
+}
+
+/// Preidcate greater than for use in pipelines
+pub fn greater_than(a: Int, b: Int) -> Bool {
+  a > b
+}
+
+/// Predicate less than for use in pipelines
+pub fn less_than(a: Int, b: Int) -> Bool {
+  a < b
+}
+
+/// Counts the number of set bits (1s) in the binary representation of n
+pub fn count_set_bits(n: Int) -> Int {
+  count_set_bits_loop(n, 0)
+}
+
+fn count_set_bits_loop(n: Int, count: Int) -> Int {
+  // Brian Kernighan’s Algorithm
+  case n == 0 {
+    True -> count
+    False -> count_set_bits_loop(int.bitwise_and(n, n - 1), count + 1)
+  }
+}
+
+pub fn bit_positions(n: Int) -> List(Int) {
+  bit_positions_loop(n, 0, [])
+}
+
+fn bit_positions_loop(n: Int, position: Int, acc: List(Int)) -> List(Int) {
+  case n == 0 {
+    True -> acc
+    False -> {
+      let new_acc = case int.bitwise_and(n, 1) != 0 {
+        True -> [position, ..acc]
+        False -> acc
+      }
+      bit_positions_loop(int.bitwise_shift_right(n, 1), position + 1, new_acc)
+    }
+  }
+}
+
+// Int.combinations does not allow replacement
+pub fn combination_pairs_with_replacement(list: List(a)) -> List(#(a, a)) {
+  combination_pairs_with_replacement_loop(list, list, [])
+}
+
+fn combination_pairs_with_replacement_loop(
+  base: List(a),
+  remaining: List(a),
+  acc: List(#(a, a)),
+) -> List(#(a, a)) {
+  case remaining {
+    [] -> acc
+    [first, ..rest] -> {
+      let new_acc =
+        list.fold(base, acc, fn(ac, second) { [#(first, second), ..ac] })
+      combination_pairs_with_replacement_loop(base, rest, new_acc)
+    }
+  }
+}
+
+// add tuples
+pub fn pair_add(a: #(Int, Int), b: #(Int, Int)) -> #(Int, Int) {
+  #(a.0 + b.0, a.1 + b.1)
+}
+
+pub fn not_equal_to(a: a, b: a) -> Bool {
+  a != b
 }
