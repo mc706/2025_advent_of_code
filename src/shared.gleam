@@ -3,6 +3,7 @@ import day2/range
 import day3/joltage
 import day4/bit_grid
 import day4/bool_grid
+import day5/database
 import gleam/list
 import gleam/result
 import gleam/string
@@ -15,6 +16,7 @@ pub type AppError {
   ParseJoltageError(err: joltage.ParseJoltageError)
   ParseBoolGridError(err: bool_grid.ParseGridError)
   ParseBitGridError(err: bit_grid.BitGridParseError)
+  ParseDatabaseError(err: database.ParseDatabaseError)
 }
 
 fn read_input(path: String) -> Result(String, simplifile.FileError) {
