@@ -1,9 +1,7 @@
 //// Utility functions
 
-import gleam/dict
 import gleam/int
 import gleam/list
-import gleam/option
 
 /// integer division with remainder
 pub fn div_mod(a: Int, b: Int) -> #(Int, Int) {
@@ -54,14 +52,6 @@ fn undigits_loop(numbers: List(Int), acc: Int) -> Int {
   case numbers {
     [] -> acc
     [first, ..rest] -> undigits_loop(rest, acc * 10 + first)
-  }
-}
-
-@deprecated("gleam really likess Result(a, Nil) over Option(a)")
-pub fn dict_option_get(dict: dict.Dict(a, b), key: a) -> option.Option(b) {
-  case dict.get(dict, key) {
-    Ok(value) -> option.Some(value)
-    Error(_) -> option.None
   }
 }
 
@@ -132,4 +122,61 @@ pub fn pair_add(a: #(Int, Int), b: #(Int, Int)) -> #(Int, Int) {
 
 pub fn not_equal_to(a: a, b: a) -> Bool {
   a != b
+}
+
+pub fn head_tail(list: List(a)) -> Result(#(a, List(a)), Nil) {
+  case list {
+    [] -> Error(Nil)
+    [first, ..rest] -> Ok(#(first, rest))
+  }
+}
+
+// Chunks a list at the given indicies
+pub fn chunk_at_indicies(list: List(a), indicies: List(Int)) -> List(List(a)) {
+  chunk_at_indicies_loop(list, list.window_by_2(indicies), [])
+  |> list.reverse
+}
+
+fn chunk_at_indicies_loop(
+  list: List(a),
+  indicies: List(#(Int, Int)),
+  acc: List(List(a)),
+) -> List(List(a)) {
+  case indicies {
+    [] -> {
+      [list, ..acc]
+    }
+    [first_range, ..rest_indices] -> {
+      let #(from_index, to_index) = first_range
+      let chunk = list.take(list, to_index - from_index)
+      let remaining = list.drop(list, to_index - from_index)
+      chunk_at_indicies_loop(remaining, rest_indices, [chunk, ..acc])
+    }
+  }
+}
+
+// validate a value and throw error if validation fails else return original value
+pub fn validate(
+  value: a,
+  validator: fn(a) -> Result(b, c),
+  error: fn(c) -> d,
+) -> Result(a, d) {
+  case validator(value) {
+    Ok(_) -> Ok(value)
+    Error(e) -> Error(error(e))
+  }
+}
+
+// Get the indicies of all successful operations in a list
+pub fn success_indicies(
+  list: List(a),
+  operation: fn(a) -> Result(b, c),
+) -> List(Int) {
+  list.index_fold(list, [], fn(acc, item, index) {
+    case operation(item) {
+      Ok(_) -> [index, ..acc]
+      Error(_) -> acc
+    }
+  })
+  |> list.reverse
 }
