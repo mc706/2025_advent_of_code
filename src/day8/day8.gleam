@@ -3,6 +3,7 @@ import day8/connected_components
 import gleam/float
 import gleam/int
 import gleam/list
+import gleam/order
 import gleam/result
 import shared.{type AppError}
 
@@ -42,8 +43,7 @@ fn problem_1(points: List(cartesian.Cartesesian)) -> Int {
   })
   |> connected_components.components
   |> list.map(list.length)
-  |> list.sort(int.compare)
-  |> list.reverse
+  |> list.sort(fn(a, b) { order.negate(int.compare(a, b)) })
   |> list.take(3)
   |> int.product
 }
