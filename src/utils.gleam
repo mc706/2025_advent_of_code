@@ -1,7 +1,9 @@
 //// Utility functions
 
+import gleam/dict
 import gleam/int
 import gleam/list
+import gleam/pair
 
 /// integer division with remainder
 pub fn div_mod(a: Int, b: Int) -> #(Int, Int) {
@@ -179,4 +181,11 @@ pub fn success_indicies(
     }
   })
   |> list.reverse
+}
+
+pub fn indexed_dict_from_list(list: List(a)) -> dict.Dict(Int, a) {
+  list
+  |> list.index_map(pair.new)
+  |> list.map(pair.swap)
+  |> dict.from_list
 }

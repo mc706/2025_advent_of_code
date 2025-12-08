@@ -5,6 +5,7 @@ import day4/bit_grid
 import day4/bool_grid
 import day5/database
 import day6/worksheet
+import day7/laser_grid
 import gleam/list
 import gleam/result
 import gleam/string
@@ -19,6 +20,7 @@ pub type AppError {
   ParseBitGridError(err: bit_grid.BitGridParseError)
   ParseDatabaseError(err: database.ParseDatabaseError)
   ParseWorksheetError(err: worksheet.ParseWorksheetError)
+  ParseLaserGridError(err: laser_grid.PaserLaserGridError)
 }
 
 fn read_input(path: String) -> Result(String, simplifile.FileError) {

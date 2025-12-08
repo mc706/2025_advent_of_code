@@ -4,6 +4,7 @@ import day3/day3
 import day4/day4
 import day5/day5
 import day6/day6
+import day7/day7
 import gleam/int
 import gleam/io
 import gleam/list
@@ -18,6 +19,7 @@ pub fn main() -> Nil {
     day4.main(),
     day5.main(),
     day6.main(),
+    day7.main(),
   ]
   |> list.index_map(echo_results)
   Nil
