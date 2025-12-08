@@ -3,6 +3,7 @@
 import gleam/dict
 import gleam/int
 import gleam/list
+import gleam/order
 import gleam/pair
 
 /// integer division with remainder
@@ -188,4 +189,16 @@ pub fn indexed_dict_from_list(list: List(a)) -> dict.Dict(Int, a) {
   |> list.index_map(pair.new)
   |> list.map(pair.swap)
   |> dict.from_list
+}
+
+pub fn min_max(
+  left: a,
+  right: a,
+  comparator: fn(a, a) -> order.Order,
+) -> #(a, a) {
+  case comparator(left, right) {
+    order.Lt -> #(left, right)
+    order.Gt -> #(right, left)
+    order.Eq -> #(left, right)
+  }
 }

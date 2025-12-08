@@ -6,6 +6,7 @@ import day4/bool_grid
 import day5/database
 import day6/worksheet
 import day7/laser_grid
+import day8/cartesian
 import gleam/list
 import gleam/result
 import gleam/string
@@ -21,6 +22,7 @@ pub type AppError {
   ParseDatabaseError(err: database.ParseDatabaseError)
   ParseWorksheetError(err: worksheet.ParseWorksheetError)
   ParseLaserGridError(err: laser_grid.PaserLaserGridError)
+  ParseCartesianError(err: cartesian.ParseCartesianError)
 }
 
 fn read_input(path: String) -> Result(String, simplifile.FileError) {
