@@ -3,6 +3,7 @@
 import gleam/dict
 import gleam/int
 import gleam/list
+import gleam/option
 import gleam/order
 import gleam/pair
 
@@ -201,4 +202,18 @@ pub fn min_max(
     order.Gt -> #(right, left)
     order.Eq -> #(left, right)
   }
+}
+
+pub fn invert_dict(dict: dict.Dict(a, b)) -> dict.Dict(b, List(a)) {
+  dict
+  |> dict.to_list
+  |> list.fold(dict.new(), fn(acc, pair) {
+    let #(k, v) = pair
+    dict.upsert(acc, v, fn(existing) {
+      case existing {
+        option.None -> [k]
+        option.Some(list) -> [k, ..list]
+      }
+    })
+  })
 }

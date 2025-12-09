@@ -16,16 +16,16 @@ import shared
 pub fn main() -> Nil {
   io.println("Hello from aoc2025!")
   [
-    measure_performance(day1.main, "Day 1"),
-    measure_performance(day2.main, "Day 2"),
-    measure_performance(day3.main, "Day 3"),
-    measure_performance(day4.main, "Day 4"),
-    measure_performance(day5.main, "Day 5"),
-    measure_performance(day6.main, "Day 6"),
-    measure_performance(day7.main, "Day 7"),
-    measure_performance(day8.main, "Day 8"),
+    day1.main,
+    day2.main,
+    day3.main,
+    day4.main,
+    day5.main,
+    day6.main,
+    day7.main,
+    day8.main,
   ]
-  |> list.index_map(echo_results)
+  |> list.index_map(evalutate)
   Nil
 }
 
@@ -55,16 +55,24 @@ fn echo_results(results: Result(#(Int, Int), shared.AppError), day: Int) -> Nil 
   }
 }
 
-fn measure_performance(func: fn() -> a, name: String) -> a {
+fn evalutate(
+  func: fn() -> Result(#(Int, Int), shared.AppError),
+  day: Int,
+) -> Nil {
+  let day_str = int.to_string(day + 1)
+  io.println("Evaluating Day " <> day_str <> "...")
+  echo_results(measure_performance(func), day)
+  io.println("-------------------------------------")
+}
+
+fn measure_performance(func: fn() -> a) -> a {
   let start = timestamp.system_time()
   let result = func()
   let end = timestamp.system_time()
   let duration = timestamp.difference(start, end)
   let #(seconds, nano_seconds) = duration.to_seconds_and_nanoseconds(duration)
   io.println(
-    "Execution time ("
-    <> name
-    <> "): "
+    "Execution time: "
     <> int.to_string(seconds)
     <> "s "
     <> int.to_string(nano_seconds / 1_000_000)

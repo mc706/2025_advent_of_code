@@ -48,7 +48,7 @@ pub fn values(cartesian: Cartesesian) -> #(Int, Int, Int) {
   #(x, y, z)
 }
 
-pub fn distance(a: Cartesesian, b: Cartesesian) -> Result(Float, Nil) {
+pub fn distance(a: Cartesesian, b: Cartesesian) -> Float {
   let #(ax, ay, az) = values(a)
   let #(bx, by, bz) = values(b)
   let axf = int.to_float(ax)
@@ -60,11 +60,23 @@ pub fn distance(a: Cartesesian, b: Cartesesian) -> Result(Float, Nil) {
   let delta_x = bxf -. axf
   let delta_y = byf -. ayf
   let delta_z = bzf -. azf
-  use x_pow <- result.try(float.power(delta_x, 2.0))
-  use y_pow <- result.try(float.power(delta_y, 2.0))
-  use z_pow <- result.try(float.power(delta_z, 2.0))
-  use distance <- result.map(float.square_root(x_pow +. y_pow +. z_pow))
-  distance
+  {
+    use x_pow <- result.try(float.power(delta_x, 2.0))
+    use y_pow <- result.try(float.power(delta_y, 2.0))
+    use z_pow <- result.try(float.power(delta_z, 2.0))
+    use distance <- result.map(float.square_root(x_pow +. y_pow +. z_pow))
+    distance
+  }
+  |> result.unwrap(0.0)
+}
+
+pub fn distance_squared(a: Cartesesian, b: Cartesesian) -> Int {
+  let #(ax, ay, az) = values(a)
+  let #(bx, by, bz) = values(b)
+  let delta_x = bx - ax
+  let delta_y = by - ay
+  let delta_z = bz - az
+  delta_x * delta_x + delta_y * delta_y + delta_z * delta_z
 }
 
 pub fn compare(a: Cartesesian, b: Cartesesian) -> order.Order {
