@@ -119,7 +119,7 @@ fn problem_2(points: List(cartesian.Cartesesian)) -> Int {
     })
   let components = connected_components.new(points, cartesian.compare)
   let #(a, b) =
-    connect_until_joint(distances, components)
+    connect_until_joint(distances, components, 0)
     |> result.unwrap(#(
       cartesian.new_cartesian(0, 0, 0),
       cartesian.new_cartesian(0, 0, 0),
@@ -132,6 +132,7 @@ fn problem_2(points: List(cartesian.Cartesesian)) -> Int {
 fn connect_until_joint(
   distances: List(#(#(cartesian.Cartesesian, cartesian.Cartesesian), Int)),
   components: connected_components.ConnectedComponents(cartesian.Cartesesian),
+  depth: Int,
 ) -> Result(#(cartesian.Cartesesian, cartesian.Cartesesian), Nil) {
   case distances {
     [] -> Error(Nil)
@@ -139,8 +140,11 @@ fn connect_until_joint(
       let #(#(a, b), _) = first
       let new_components = connected_components.connect(components, a, b)
       case connected_components.is_fully_connected(new_components) {
-        True -> Ok(#(a, b))
-        False -> connect_until_joint(rest, new_components)
+        True -> {
+          echo depth
+          Ok(#(a, b))
+        }
+        False -> connect_until_joint(rest, new_components, depth + 1)
       }
     }
   }
