@@ -13,6 +13,10 @@ pub type ParseGridError {
   InvalidFormat(msg: String)
 }
 
+pub fn new() -> BoolGrid {
+  BoolGrid(dict.new())
+}
+
 pub type Cord =
   #(Int, Int)
 
@@ -46,6 +50,7 @@ pub fn set(grid: BoolGrid, cord: Cord, value: Bool) -> Result(BoolGrid, Nil) {
   let row =
     dict.get(grid.grid, y)
     |> result.map(dict.merge(_, dict.from_list([#(x, value)])))
+    |> result.or(Ok(dict.from_list([#(x, value)])))
   let new_grid =
     result.map(row, fn(new_row) {
       dict.merge(grid.grid, dict.from_list([#(y, new_row)]))
@@ -78,7 +83,7 @@ pub fn active_cords(grid: BoolGrid) -> List(Cord) {
   |> list.map(pair.first)
 }
 
-fn get_surrounding_indices(cord: Cord) -> List(Cord) {
+pub fn get_surrounding_indices(cord: Cord) -> List(Cord) {
   let #(x, y) = cord
   [
     #(x - 1, y - 1),
@@ -112,4 +117,13 @@ pub fn remove_where(
       |> result.unwrap(acc)
     })
   #(new_grid, list.length(to_remove))
+}
+
+pub fn invert(grid: BoolGrid) -> BoolGrid {
+  to_list(grid)
+  |> list.fold(grid, fn(acc, pair) {
+    let #(cord, value) = pair
+    set(acc, cord, !value)
+    |> result.unwrap(acc)
+  })
 }

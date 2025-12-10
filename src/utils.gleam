@@ -6,6 +6,7 @@ import gleam/list
 import gleam/option
 import gleam/order
 import gleam/pair
+import gleam/result
 
 /// integer division with remainder
 pub fn div_mod(a: Int, b: Int) -> #(Int, Int) {
@@ -216,4 +217,25 @@ pub fn invert_dict(dict: dict.Dict(a, b)) -> dict.Dict(b, List(a)) {
       }
     })
   })
+}
+
+pub fn maximum(ls: List(Int)) -> Result(Int, Nil) {
+  list.max(ls, int.compare)
+}
+
+pub fn minimum(ls: List(Int)) -> Result(Int, Nil) {
+  list.max(ls, fn(a, b) { order.negate(int.compare(a, b)) })
+}
+
+pub fn bounds(list: List(Int)) -> Result(#(Int, Int), Nil) {
+  use min <- result.try(minimum(list))
+  use max <- result.try(maximum(list))
+  Ok(#(min, max))
+}
+
+pub fn wrap_one(ls: List(a)) -> List(a) {
+  case ls {
+    [] -> []
+    [first, ..] -> list.append(ls, [first])
+  }
 }

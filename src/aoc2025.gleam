@@ -6,6 +6,7 @@ import day5/day5
 import day6/day6
 import day7/day7
 import day8/day8
+import day9/day9
 import gleam/int
 import gleam/io
 import gleam/list
@@ -16,14 +17,15 @@ import shared
 pub fn main() -> Nil {
   io.println("Hello from aoc2025!")
   [
-    day1.main,
-    day2.main,
-    day3.main,
-    day4.main,
-    day5.main,
-    day6.main,
-    day7.main,
-    day8.main,
+    // day1.main,
+    // day2.main,
+    // day3.main,
+    // day4.main,
+    // day5.main,
+    // day6.main,
+    // day7.main,
+    // day8.main,
+    day9.main,
   ]
   |> list.index_map(evalutate)
   Nil

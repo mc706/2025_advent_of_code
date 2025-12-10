@@ -1,4 +1,5 @@
 import gleam/int
+import gleam/io
 import gleam/list
 import gleam/result
 import gleam/string
@@ -6,6 +7,10 @@ import utils
 
 pub opaque type BitGrid {
   BitGrid(data: Int, width: Int, size: Int)
+}
+
+pub fn new_bit_grid(width: Int, height: Int) -> BitGrid {
+  BitGrid(0, width, width * height)
 }
 
 pub type Cord =
@@ -89,6 +94,20 @@ pub fn get(grid: BitGrid, cord: Cord) -> Result(Bool, Nil) {
   }
 }
 
+pub fn set(grid: BitGrid, cord: Cord, value: Bool) -> Result(BitGrid, Nil) {
+  case cord_in_bounds(cord, grid) {
+    False -> Error(Nil)
+    True -> {
+      let bit_mask = cord_to_int(cord, grid)
+      let new_data = case value {
+        True -> int.bitwise_or(grid.data, bit_mask)
+        False -> int.bitwise_and(grid.data, int.bitwise_not(bit_mask))
+      }
+      Ok(BitGrid(new_data, grid.width, grid.size))
+    }
+  }
+}
+
 pub fn subtract(grid: BitGrid, mask: Int) -> BitGrid {
   BitGrid(
     int.bitwise_and(grid.data, int.bitwise_not(mask)),
@@ -132,4 +151,11 @@ pub fn remove_where(
   |> list.map(cord_to_int(_, grid))
   |> int.sum()
   |> subtract(grid, _)
+}
+
+pub fn debug(grid: BitGrid) -> BitGrid {
+  echo "BitGrid Debug:"
+  echo grid
+  echo active_cords(grid)
+  grid
 }
