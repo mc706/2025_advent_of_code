@@ -5,19 +5,23 @@ import gleam/list
 import gleam/order
 import gleam/result
 import gleam/set
-import gleam/string
 import utils
 
 pub opaque type Drawing {
-  Drawing(bits: bool_grid.BoolGrid, coords: List(coordinate.Cord))
+  Drawing(
+    bits: bool_grid.BoolGrid,
+    coords: List(coordinate.Cord),
+    shell: bool_grid.BoolGrid,
+  )
 }
 
 pub fn new(coords: List(coordinate.Cord)) -> Drawing {
   let bits = bool_grid.new()
-  Drawing(bits, coords)
+  Drawing(bits, coords, bool_grid.new())
   |> draw_points
   |> draw_lines
-  |> flood_fill
+  // |> flood_fill
+  |> make_shell
 }
 
 fn draw_points(drawing: Drawing) -> Drawing {
@@ -26,7 +30,7 @@ fn draw_points(drawing: Drawing) -> Drawing {
     bool_grid.set(acc, coord, True)
     |> result.unwrap(acc)
   })
-  |> Drawing(drawing.coords)
+  |> Drawing(drawing.coords, drawing.shell)
 }
 
 fn line(a: #(Int, Int), b: #(Int, Int)) -> List(#(Int, Int)) {
@@ -52,9 +56,52 @@ fn draw_lines(drawing: Drawing) -> Drawing {
       |> result.unwrap(acc2)
     })
   })
-  |> Drawing(drawing.coords)
+  |> Drawing(drawing.coords, drawing.shell)
 }
 
+fn make_shell(drawing: Drawing) -> Drawing {
+  drawing
+  |> make_shell_rec(#(0, 0), set.new())
+}
+
+fn make_shell_rec(
+  drawing: Drawing,
+  point: coordinate.Cord,
+  visited: set.Set(coordinate.Cord),
+) -> Drawing {
+  case set.contains(visited, point) {
+    True -> drawing
+    False -> {
+      let new_visited = set.insert(visited, point)
+      let neighbors_search =
+        bool_grid.get_surrounding_indices(point)
+        |> utils.wrap_one
+        |> list.window_by_2
+        |> list.filter_map(fn(pair) {
+          let #(a, b) = pair
+          case bool_grid.get(drawing.bits, a), bool_grid.get(drawing.bits, b) {
+            Ok(True), Ok(True) -> Error(Nil)
+            _, Ok(True) -> Ok(a)
+            _, _ -> Error(Nil)
+          }
+        })
+        |> list.first
+      let found_edge = result.is_ok(neighbors_search)
+      let next_coord =
+        neighbors_search
+        |> result.unwrap(utils.pair_add(point, #(1, 1)))
+
+      let new_drawing =
+        bool_grid.set(drawing.shell, point, found_edge)
+        |> result.unwrap(drawing.shell)
+        |> Drawing(drawing.bits, drawing.coords, _)
+
+      make_shell_rec(new_drawing, next_coord, new_visited)
+    }
+  }
+}
+
+@deprecated("too slow for massive grids")
 fn flood_fill(drawing: Drawing) -> Drawing {
   let start_coords =
     drawing.coords
@@ -73,9 +120,10 @@ fn flood_fill(drawing: Drawing) -> Drawing {
 
   drawing.bits
   |> flood_fill_rec([start_coords], set.new())
-  |> Drawing(drawing.coords)
+  |> Drawing(drawing.coords, drawing.shell)
 }
 
+@deprecated("too slow for massive grids")
 fn flood_fill_rec(
   bits: bool_grid.BoolGrid,
   to_visit: List(coordinate.Cord),
@@ -115,13 +163,12 @@ fn rectangle_coordinates(
 ) -> List(coordinate.Cord) {
   let #(ax, ay) = a
   let #(bx, by) = b
-  let x_range = list.range(int.min(ax, bx), int.max(ax, bx))
-  let y_range = list.range(int.min(ay, by), int.max(ay, by))
-  x_range
-  |> list.flat_map(fn(x) {
-    y_range
-    |> list.map(fn(y) { #(x, y) })
-  })
+  let top = line(#(ax, ay), #(bx, ay))
+  let bottom = line(#(ax, by), #(bx, by))
+  let left = line(#(ax, ay), #(ax, by))
+  let right = line(#(bx, ay), #(bx, by))
+  list.flatten([top, bottom, left, right])
+  |> list.unique
 }
 
 pub fn overlaps(
@@ -132,6 +179,18 @@ pub fn overlaps(
   rectangle_coordinates(a, b)
   |> list.all(fn(coord) {
     bool_grid.get(drawing.bits, coord)
+    |> result.unwrap(False)
+  })
+}
+
+pub fn intersects_shell(
+  drawing: Drawing,
+  a: coordinate.Cord,
+  b: coordinate.Cord,
+) -> Bool {
+  rectangle_coordinates(a, b)
+  |> list.any(fn(coord) {
+    bool_grid.get(drawing.shell, coord)
     |> result.unwrap(False)
   })
 }

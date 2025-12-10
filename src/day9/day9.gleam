@@ -1,5 +1,6 @@
 import day9/coordinate
 import day9/drawing
+import gleam/bool
 import gleam/int
 import gleam/list
 import gleam/result
@@ -32,17 +33,15 @@ fn problem_2(coords: List(coordinate.Cord)) -> Int {
   let drawing =
     coords
     |> drawing.new
-    |> echo
-  echo drawing
+  echo "Drawing done"
   coords
   |> list.combination_pairs
-  |> list.filter(fn(pair) {
+  |> list.filter_map(fn(pair) {
     let #(a, b) = pair
-    drawing.overlaps(drawing, a, b)
-  })
-  |> list.map(fn(pair) {
-    let #(a, b) = pair
-    coordinate.rect_area(a, b)
+    case drawing.intersects_shell(drawing, a, b) {
+      True -> Error(Nil)
+      False -> Ok(coordinate.rect_area(a, b))
+    }
   })
   |> list.max(int.compare)
   |> result.unwrap(-1)

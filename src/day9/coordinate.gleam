@@ -32,3 +32,8 @@ pub fn rect_area(a: Cord, b: Cord) -> Int {
   let height = int.absolute_value(by - ay) + 1
   width * height
 }
+
+pub fn to_string(coord: Cord) -> String {
+  let #(x, y) = coord
+  string.concat([int.to_string(x), ",", int.to_string(y)])
+}
