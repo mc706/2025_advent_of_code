@@ -1,4 +1,5 @@
 import day1/dial
+import day10/machine
 import day2/range
 import day3/joltage
 import day4/bit_grid
@@ -25,6 +26,7 @@ pub type AppError {
   ParseLaserGridError(err: laser_grid.PaserLaserGridError)
   ParseCartesianError(err: cartesian.ParseCartesianError)
   ParseCoordinateError(err: coordinate.ParseCoordinateError)
+  ParseMachineError(err: machine.ParseMachineError)
 }
 
 fn read_input(path: String) -> Result(String, simplifile.FileError) {

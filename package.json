@@ -1,0 +1,28 @@
+{
+  "name": "aoc2025",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "[![Tests](https://github.com/mc706/2025_advent_of_code/actions/workflows/test.yml/badge.svg)](https://github.com/mc706/2025_advent_of_code/actions/workflows/test.yml)",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mc706/2025_advent_of_code.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/mc706/2025_advent_of_code/issues"
+  },
+  "homepage": "https://github.com/mc706/2025_advent_of_code#readme",
+  "dependencies": {
+    "glpk.js": "^4.0.2"
+  }
+}

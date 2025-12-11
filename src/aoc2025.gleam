@@ -1,4 +1,5 @@
 import day1/day1
+import day10/day10
 import day2/day2
 import day3/day3
 import day4/day4
@@ -25,7 +26,8 @@ pub fn main() -> Nil {
     // day6.main,
     // day7.main,
     // day8.main,
-    day9.main,
+    // day9.main,
+    day10.main,
   ]
   |> list.index_map(evalutate)
   Nil
