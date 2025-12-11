@@ -157,6 +157,7 @@ fn flood_fill_rec(
   }
 }
 
+// only need to check the outline of the rectangle
 fn rectangle_coordinates(
   a: coordinate.Cord,
   b: coordinate.Cord,
@@ -171,6 +172,7 @@ fn rectangle_coordinates(
   |> list.unique
 }
 
+@deprecated("Dont need to do an exhaustive check like this, use intersects_shell instead")
 pub fn overlaps(
   drawing: Drawing,
   a: coordinate.Cord,
@@ -183,6 +185,7 @@ pub fn overlaps(
   })
 }
 
+// only need a single edge of the rectangle to intersect the outer shell to invalidate it
 pub fn intersects_shell(
   drawing: Drawing,
   a: coordinate.Cord,

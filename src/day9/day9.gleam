@@ -1,6 +1,5 @@
 import day9/coordinate
 import day9/drawing
-import gleam/bool
 import gleam/int
 import gleam/list
 import gleam/result
@@ -33,7 +32,6 @@ fn problem_2(coords: List(coordinate.Cord)) -> Int {
   let drawing =
     coords
     |> drawing.new
-  echo "Drawing done"
   coords
   |> list.combination_pairs
   |> list.filter_map(fn(pair) {
