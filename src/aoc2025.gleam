@@ -1,5 +1,6 @@
 import day1/day1
 import day10/day10
+import day11/day11
 import day2/day2
 import day3/day3
 import day4/day4
@@ -18,16 +19,17 @@ import shared
 pub fn main() -> Nil {
   io.println("Hello from aoc2025!")
   [
-    // day1.main,
-    // day2.main,
-    // day3.main,
-    // day4.main,
-    // day5.main,
-    // day6.main,
-    // day7.main,
-    // day8.main,
+    day1.main,
+    day2.main,
+    day3.main,
+    day4.main,
+    day5.main,
+    day6.main,
+    day7.main,
+    day8.main,
     // day9.main,
-    day10.main,
+    // day10.main,
+    day11.main,
   ]
   |> list.index_map(evalutate)
   Nil

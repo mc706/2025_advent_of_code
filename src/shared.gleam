@@ -1,5 +1,6 @@
 import day1/dial
 import day10/machine
+import day11/network
 import day2/range
 import day3/joltage
 import day4/bit_grid
@@ -27,6 +28,7 @@ pub type AppError {
   ParseCartesianError(err: cartesian.ParseCartesianError)
   ParseCoordinateError(err: coordinate.ParseCoordinateError)
   ParseMachineError(err: machine.ParseMachineError)
+  ParseNetworkError(err: network.ParseNetworkError)
 }
 
 fn read_input(path: String) -> Result(String, simplifile.FileError) {
