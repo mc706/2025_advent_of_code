@@ -32,13 +32,12 @@ pub fn parse(input: String) -> Result(Puzzle, ParsePuzzleError) {
     Ok(idx) -> {
       let shape_lines = list.take(lines, idx)
       let region_lines = list.drop(lines, idx)
-      
+
       use shapes <- result.try(parse_shapes(shape_lines))
       use regions <- result.try(parse_regions(region_lines))
       Ok(Puzzle(shapes: shapes, regions: regions))
     }
-    Error(_) ->
-      Error(InvalidRegionFormat("Could not find region section"))
+    Error(_) -> Error(InvalidRegionFormat("Could not find region section"))
   }
 }
 
@@ -54,7 +53,9 @@ fn find_region_start(lines: List(String), index: Int) -> Result(Int, Nil) {
   }
 }
 
-fn parse_shapes(lines: List(String)) -> Result(Dict(Int, Shape), ParsePuzzleError) {
+fn parse_shapes(
+  lines: List(String),
+) -> Result(Dict(Int, Shape), ParsePuzzleError) {
   lines
   |> group_shape_lines([], [])
   |> list.map(parse_shape_lines_to_shape)

@@ -14,9 +14,7 @@ pub fn main() {
   case puzzle.parse(content) {
     Ok(puz) -> {
       io.println("✓ Parsing succeeded!")
-      io.println(
-        "Number of shapes: " <> int.to_string(dict.size(puz.shapes)),
-      )
+      io.println("Number of shapes: " <> int.to_string(dict.size(puz.shapes)))
       io.println(
         "Number of regions: " <> int.to_string(list.length(puz.regions)),
       )
