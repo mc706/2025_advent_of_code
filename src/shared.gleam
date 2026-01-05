@@ -1,6 +1,7 @@
 import day1/dial
 import day10/machine
 import day11/network
+import day12/puzzle
 import day2/range
 import day3/joltage
 import day4/bit_grid
@@ -29,6 +30,7 @@ pub type AppError {
   ParseCoordinateError(err: coordinate.ParseCoordinateError)
   ParseMachineError(err: machine.ParseMachineError)
   ParseNetworkError(err: network.ParseNetworkError)
+  ParsePuzzleError(err: puzzle.ParsePuzzleError)
 }
 
 fn read_input(path: String) -> Result(String, simplifile.FileError) {
